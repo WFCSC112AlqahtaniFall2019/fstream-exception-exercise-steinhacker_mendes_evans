@@ -6,11 +6,29 @@ void readEntry( int& entry);
 
 int main() {
 
+    // read input
+    ifstream input;
+
+    input.open("input");
+
+    if(input.is_open()){
+        cout << "File for input is not opened" << endl;
+    }
+
+    // print output
+
+    ofstream output;
+
+    output.open("output.txt");
+    if(!output.is_open()){
+        cout << "File for output is not opened" << endl;
+    }
+
 
     // read table dimensions and allocate 2D array
     int nRows, nCols;
     cout<<"Enter the number of rows and columns: ";
-    cin >> nRows >> nCols;
+    input >> nRows >> nCols;
     int** table = new int*[nRows];
     for(int i = 0; i < nRows; i++) {
         table[i] = new int[nCols];
@@ -21,14 +39,18 @@ int main() {
     for(int i = 0; i < nRows; i++) {
         for(int j = 0; j < nCols; j++) {
             try {
-              readEntry(table[i][j]);
+                int a;
+                input >> a;
+              table[i][j] = a;
             }
+
+
             catch (int x) {
                     cout << "Entry " << i << "," << j << " not an integer, was set to " << x << ", now setting it to 0" << endl;
                     table[i][j] = 0;
-                    cin.clear();
+                    input.clear();
                     string tmp;
-                    cin >> tmp;
+                    input >> tmp;
             }
         }
     }
@@ -38,7 +60,7 @@ int main() {
     cout << nCols << " " << nRows << endl;
     for(int i = 0; i < nCols; i++) {
         for(int j = 0; j < nRows; j++) {
-            cout << table[j][i] << " ";
+            output << table[j][i] << " ";
         }
         cout << endl;
     }
@@ -49,6 +71,9 @@ int main() {
         delete [] table[i];
     }
     delete [] table;
+
+    input.close();
+    output.close();
 
 }
 
