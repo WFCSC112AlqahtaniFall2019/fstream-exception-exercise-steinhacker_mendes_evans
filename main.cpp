@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 using namespace std;
 
 void readEntry( int& entry);
@@ -11,7 +12,7 @@ int main() {
 
     input.open("input");
 
-    if(input.is_open()){
+    if(!input.is_open()){
         cout << "File for input is not opened" << endl;
     }
 
@@ -20,6 +21,7 @@ int main() {
     ofstream output;
 
     output.open("output.txt");
+
     if(!output.is_open()){
         cout << "File for output is not opened" << endl;
     }
@@ -28,39 +30,52 @@ int main() {
     // read table dimensions and allocate 2D array
     int nRows, nCols;
     cout<<"Enter the number of rows and columns: ";
+
     input >> nRows >> nCols;
+
     int** table = new int*[nRows];
     for(int i = 0; i < nRows; i++) {
         table[i] = new int[nCols];
     }
 
-    // read table data
+    cout << "N Rows " << nRows << "  columns are : " << nCols << endl;
+
+     // read table data
     cout<<"Enter your numbers: ";
     for(int i = 0; i < nRows; i++) {
         for(int j = 0; j < nCols; j++) {
+            int a;
             try {
-                int a;
+
                 input >> a;
-              table[i][j] = a;
+
+                if(a < 0 ) {
+                    throw runtime_error  ("Invalid input");
+
+                }
+
             }
 
 
-            catch (int x) {
-                    cout << "Entry " << i << "," << j << " not an integer, was set to " << x << ", now setting it to 0" << endl;
-                    table[i][j] = 0;
-                    input.clear();
-                    string tmp;
-                    input >> tmp;
+            catch (runtime_error& happened) {
+                    cout << "Entry " << i << "," << j << " not an integer, was set to " << "x" << ", now setting it to 0" << endl;
+                    a = 0;
+                    happened.what();
+
             }
+
+            table[i][j] = a;
+
+
         }
     }
 
 
     // write table data to the screen in transposed order
     cout << nCols << " " << nRows << endl;
-    for(int i = 0; i < nCols; i++) {
-        for(int j = 0; j < nRows; j++) {
-            output << table[j][i] << " ";
+    for(int i = 0; i < nRows; i++) {
+        for(int j = 0; j < nCols; j++) {
+            output << table[j][i] << " \n";
         }
         cout << endl;
     }
